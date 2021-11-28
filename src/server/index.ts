@@ -1,6 +1,5 @@
 import httpServer, { Server, IncomingMessage, ServerResponse } from "http";
 
-// , { IncomingMessage }
 import log from "../log";
 
 import * as Types from "./types";
@@ -39,7 +38,6 @@ class HTTPServer implements Types.HTTPServer {
     req: IncomingMessage,
     res: ServerResponse
   ): void => {
-    // console.log("req", req.url);
     const { url = "" } = req;
     const queries = this.getQuery(url);
     res.end(`${url} ${JSON.stringify(queries)}`);
@@ -103,12 +101,3 @@ class HTTPServer implements Types.HTTPServer {
 }
 
 export default new HTTPServer();
-// const host = "localhost";
-// const port = 8000;
-
-// const requestListener = (req: IncomingMessage): void => {
-//   // console.log(req, res);
-//   console.log(req.url);
-// };
-
-// const server = http.createServer(requestListener);
