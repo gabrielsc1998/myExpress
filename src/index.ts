@@ -1,14 +1,5 @@
-import http, { IncomingMessage } from "http";
+import app from "./express";
 
-const host = "localhost";
-const port = 8000;
-
-const requestListener = (req: IncomingMessage): void => {
-  // console.log(req, res);
-  console.log(req.url);
-};
-
-const server = http.createServer(requestListener);
-server.listen(port, host, () => {
-  console.log(`Server is running on http://${host}:${port}`);
+app.listen(8000, () => {
+  console.log("testando servidor - 8000");
 });
