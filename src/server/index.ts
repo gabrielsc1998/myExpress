@@ -49,12 +49,10 @@ class HTTPServer implements Types.HTTPServer {
 
   // }
 
-  private getQuery = (
-    url: string
-  ): { [key: string]: string | number } | undefined => {
+  getQuery = (url: string): { [key: string]: string } | undefined => {
     try {
       if (url.length) {
-        const objQueries: { [key: string]: string | number } = {};
+        const objQueries: { [key: string]: string } = {};
         const arrayUrl = url.split("");
 
         const hasQueryPattern = (char: string): boolean =>
@@ -68,10 +66,10 @@ class HTTPServer implements Types.HTTPServer {
           const idxBar = parsedUrl.indexOf("/");
           if (idxNewQuery !== -1 || idxBar !== -1) {
             if (idxNewQuery !== -1) {
-              if (idxBar !== -1 && idxBar > idxNewQuery) {
-                return parsedUrl.substring(0, idxNewQuery);
+              if (idxBar !== -1 && idxBar < idxNewQuery) {
+                return parsedUrl.substring(0, idxBar);
               }
-              return parsedUrl.substring(0, idxBar);
+              return parsedUrl.substring(0, idxNewQuery);
             }
             return parsedUrl.substring(0, idxBar);
           }
