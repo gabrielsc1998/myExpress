@@ -34,6 +34,9 @@ module.exports = {
     ],
     "default-param-last": "off",
     "comma-dangle": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "implicit-arrow-linebreak": "off",
   },
   settings: {
     "import/resolver": {
