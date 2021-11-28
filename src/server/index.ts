@@ -1,4 +1,4 @@
-import httpServer, { Server, IncomingMessage, ServerResponse } from "http";
+import httpServer, { Server } from "http";
 
 import log from "../log";
 
@@ -6,6 +6,8 @@ import * as Types from "./types";
 
 class HTTPServer implements Types.HTTPServer {
   private server?: Server = undefined;
+
+  private requestListener?: Types.RequestListener = undefined;
 
   listen = (port = 8888, callback?: () => void): void => {
     try {
@@ -22,6 +24,10 @@ class HTTPServer implements Types.HTTPServer {
     }
   };
 
+  setRequestListener = (requestListener: Types.RequestListener): void => {
+    this.requestListener = requestListener;
+  };
+
   private createServer = (): boolean | undefined => {
     try {
       this.server = httpServer.createServer(this.requestListener);
@@ -34,14 +40,14 @@ class HTTPServer implements Types.HTTPServer {
     return undefined;
   };
 
-  private requestListener = (
-    req: IncomingMessage,
-    res: ServerResponse
-  ): void => {
-    const { url = "" } = req;
-    const queries = this.getQuery(url);
-    res.end(`${url} ${JSON.stringify(queries)}`);
-  };
+  // private requestListener = (
+  //   req: IncomingMessage,
+  //   res: ServerResponse
+  // ): void => {
+  //   const { url = "" } = req;
+  //   const queries = this.getQuery(url);
+  //   res.end(`${url} ${JSON.stringify(queries)}`);
+  // };
 
   // private getParams = (url: string): { [key: string]: string | number } => {
 
@@ -100,4 +106,5 @@ class HTTPServer implements Types.HTTPServer {
   };
 }
 
+export * from "http";
 export default new HTTPServer();
