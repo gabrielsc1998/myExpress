@@ -21,5 +21,25 @@ module.exports = {
         allowConciseArrowFunctionExpressionsStartingWithVoid: true,
       },
     ],
+    "class-methods-use-this": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        js: "never",
+        jsx: "never",
+        ts: "never",
+        tsx: "never",
+      },
+    ],
+    "default-param-last": "off",
+    "comma-dangle": "off",
+  },
+  settings: {
+    "import/resolver": {
+      node: {
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      },
+    },
   },
 };
