@@ -1,6 +1,6 @@
 import log from "../log";
-import server from "../server";
 import { HTTP_METHODS } from "../server/data";
+import server, { IncomingMessage, ServerResponse } from "../server";
 
 import * as Types from "./types";
 
@@ -14,6 +14,7 @@ class Express implements Types.Express {
 
   listen = (port: number, callback?: () => void): void => {
     try {
+      this.server.setRequestListener(this.requestListener);
       this.server.listen(port, callback);
     } catch (error) {
       log.error("Express", "listen", error);
@@ -41,6 +42,15 @@ class Express implements Types.Express {
       method,
       path,
     });
+  };
+
+  private requestListener = (
+    req: IncomingMessage,
+    res: ServerResponse
+  ): void => {
+    const { url = "" } = req;
+    const queries = this.server.getQuery(url);
+    res.end(`${url} ${JSON.stringify(queries)}`);
   };
 }
 
