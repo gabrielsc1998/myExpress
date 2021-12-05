@@ -39,6 +39,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": ["error"],
     "implicit-arrow-linebreak": "off",
     "import/prefer-default-export": "off",
+    "operator-linebreak": "off",
   },
   settings: {
     "import/resolver": {
