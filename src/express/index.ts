@@ -50,33 +50,86 @@ class Express implements Types.Express {
     });
   };
 
-  private requestListener = (
+  private buildResponseObject = (res: ServerResponse): Types.Response => {
+    const send = (data?: unknown): void => {
+      // console.log(data);
+      res.end(JSON.stringify(data));
+    };
+    return {
+      send,
+      status: (status: number) => {
+        res.statusCode = status;
+        return {
+          send,
+        };
+      },
+      setHeader: (key: string, value: string | number | Array<string>) =>
+        res.setHeader(key, value),
+    };
+  };
+
+  private extractBodyFromReq = async (
+    req: IncomingMessage
+  ): Promise<Types.Request["body"]> =>
+    new Promise((resolve) => {
+      let data = "";
+      req.on("data", (chunk: string) => {
+        data += chunk;
+      });
+      let resp = {};
+      req.on("end", () => {
+        resp = JSON.parse(data); // 'Buy the milk'
+        // console.log(resp);
+
+        return resolve(resp);
+      });
+    });
+
+  private buildRequestObject = async (
+    req: IncomingMessage
+  ): Promise<Types.Request> => {
+    let body = {};
+    if (req?.method !== HTTP_METHODS.GET) {
+      body = await this.extractBodyFromReq(req);
+    }
+    return {
+      url: req.url || "",
+      method: req.method || "",
+      body,
+    };
+  };
+
+  private requestListener = async (
     req: IncomingMessage,
     res: ServerResponse
-  ): void => {
+  ): Promise<void> => {
     const { url = "", method } = req;
     if (url && method) {
-      if (this.callSomeHandler(method, url, req, res) !== undefined) {
+      if ((await this.callSomeHandler(method, url, req, res)) !== undefined) {
         return;
       }
     }
     // const queries = this.server.getQuery(url);
     // res.end(`${url} ${JSON.stringify(queries)}`);
-    res.end(`${url}${method}`);
+    res.statusCode = 404;
+    res.end();
   };
 
-  private callSomeHandler = (
+  private callSomeHandler = async (
     method: string,
     url: string,
     req: IncomingMessage,
     res: ServerResponse
-  ): number | undefined => {
+  ): Promise<number | undefined> => {
     try {
       const idxRoute = this.routes.findIndex(
         (route) => route.method === method && route.path === url
       );
       if (idxRoute !== -1) {
-        this.routes[idxRoute].handler(req, res);
+        this.routes[idxRoute].handler(
+          await this.buildRequestObject(req),
+          this.buildResponseObject(res)
+        );
         return idxRoute;
       }
     } catch (error) {
