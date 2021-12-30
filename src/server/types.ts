@@ -9,3 +9,10 @@ export type RequestListener = (
   req: IncomingMessage,
   res: ServerResponse
 ) => void;
+
+export interface IHTTP_METHODS {
+  GET: "GET";
+  PUT: "PUT";
+  POST: "POST";
+  DELETE: "DELETE";
+}
